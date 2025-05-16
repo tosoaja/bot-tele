@@ -6,64 +6,93 @@
   <title>Cinnamon QnA</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: linear-gradient(135deg, #ff7e5f, #feb47b);
-      height: 100vh;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #ff6a00, #fbc02d);
+      font-family: Arial, sans-serif;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
     .card {
       background: white;
       padding: 2rem;
-      border-radius: 12px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
       text-align: center;
-      width: 300px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
     }
     input, textarea {
       width: 100%;
-      padding: 0.75rem;
-      margin-top: 1rem;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 20px;
       border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 1rem;
+      border-radius: 8px;
+      font-size: 1em;
     }
     button {
-      margin-top: 1rem;
-      padding: 0.75rem;
-      background-color: #ff6b6b;
-      color: white;
+      background-color: #ff6f61;
       border: none;
-      border-radius: 6px;
-      font-size: 1rem;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 8px;
+      font-size: 1em;
       cursor: pointer;
+    }
+    button:hover {
+      background-color: #e65c50;
+    }
+    small {
+      display: block;
+      margin-top: 20px;
+      color: #666;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <h2>Cinnamon QnA</h2>
-    <p>Ask your question below:</p>
-    <input type="text" id="name" placeholder="Your name or number"/>
-    <textarea id="question" placeholder="Type your question here..."></textarea>
+    <h2>Toso Quest</h2>
+    <p>Jawaban:</p>
+    <input type="text" id="name" placeholder="Your name or number" />
+    <textarea id="question" rows="4" placeholder="Type your question here..."></textarea>
     <button onclick="sendMessage()">Send</button>
-    <p style="font-size: 0.8rem; color: gray;">© 2024 Cinnamon QnA</p>
+    <small>© 2024 Toso Question</small>
   </div>
 
   <script>
     async function sendMessage() {
-      const name = document.getElementById("name").value;
-      const question = document.getElementById("question").value;
+      const name = document.getElementById("name").value.trim();
+      const question = document.getElementById("question").value.trim();
+      if (!name || !question) return alert("Please fill in all fields.");
 
-      const response = await fetch("http://localhost:3000/send", {
+      const message = `*New QnA Submission:*\nName: ${name}\nQuestion: ${question}`;
+
+      // Ganti dengan token dan chat_id kamu
+      const token = '7609263974:AAEDVg9Se7AhzfiH_Kkmt0XGlskcP0uAJqA';
+      const chatId = '586242191';
+
+      const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, question })
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: "Markdown"
+        })
       });
 
-      const result = await response.json();
-      alert(result.message);
+      if (res.ok) {
+        alert("Your question has been sent!");
+        document.getElementById("name").value = "";
+        document.getElementById("question").value = "";
+      } else {
+        alert("Failed to send message.");
+      }
     }
   </script>
 </body>
